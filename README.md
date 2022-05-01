@@ -54,10 +54,19 @@ Make a 14-digit password with all options and don't use a random one
 ```bash
 python3 main.py 14 --all --password Password123
 ```
+The result will be `PASsWorD699orD`
+
 Or make a random password with custom options...
 ```bash
 python3 main.py 12 --numbers 4 --capital 2 --lower 4 --symbols 2
 ```
+The result will be `E5w_ej4+Hx05`
+
+Or create a password quickly by adding a symbol
+```bash
+python3 main.py -s 1
+```
+The result will be `X154@Hsqi7UbH7`
 
 ## Notes
 * --numbers, --symbols, --capital, --lower, --all and --password are optional.

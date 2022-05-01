@@ -116,7 +116,7 @@ class Console:
 
 class main_info:
     def __init__(self):
-        self.version = '1.0'
+        self.version = '1.2'
         self.author = 'Quetzal-sama'
         self.name = 'Secret Maker'
         self.description = 'A simple password generator'
@@ -267,15 +267,16 @@ def __main__():
                 try:
                     password = str(args[args.index('-p') + 1])
                 except Exception:
-                    # Error
-                    console.error('The password must be a string')
-                    sys.exit()
+                     # Force an Exception
+                    raise Exception
         except Exception:
             # Error
             console.error('The password is not specified')
             sys.exit()
     else:
         password = ''
+    # Start numbers with 0
+    numbers = 0
     # Check if the user wants to add numbers to the password
     if '-n' in args:
         # Check if the numbers are specified
@@ -283,23 +284,19 @@ def __main__():
             if not args[args.index('-n') + 1] in short_options:
                 # Try to convert the numbers to an integer
                 try:
-                    numbers = int(args[args.index('-n') + 1])
+                    numbers = round(int(args[args.index('-n') + 1]))
                 except Exception:
                     # Error
                     console.error('The numbers must be an number')
                     sys.exit()
             else:
-                # Warning
-                console.warning('The numbers are not specified, using the default numbers of ' + str(round(length/4)))
-                # Set the numbers to the length/4
-                numbers = length/4
+                # Force an Exception
+                raise Exception
         except Exception:
             # Warning
-            console.warning('The numbers are not specified, using the default numbers of ' + str(round(length/4)))
-            # Set the numbers to the length/4
-            numbers = length/4
-    else:
-        numbers = 0
+            console.warning('The numbers are not specified')
+    # Start symbols with -1
+    symbols = -1
     # Check if the user wants to add symbols to the password
     if '-s' in args:
         # Check if the symbols are specified
@@ -307,23 +304,21 @@ def __main__():
             if not args[args.index('-s') + 1] in short_options:
                 # Try to convert the symbols to an integer
                 try:
-                    symbols = int(args[args.index('-s') + 1])
+                    symbols = round(int(args[args.index('-s') + 1]))
                 except Exception:
                     # Error
                     console.error('The symbols must be an number')
                     sys.exit()
             else:
-                # Warning
-                console.warning('The symbols are not specified, using the default symbols of ' + str(round(length/4)))
-                # Set the symbols to the length/4
-                symbols = length/4
+                # Force an Exception
+                raise Exception
         except Exception:
             # Warning
-            console.warning('The symbols are not specified, using the default symbols of ' + str(round(length/4)))
-            # Set the symbols to the length/4
-            symbols = length/4
-    else:
-        symbols = 0
+            console.warning('The symbols are not specified')
+            # Set the symbols to 0
+            symbols = 0
+    # Start capital with 0
+    capital = 0
     # Check if the user wants to add capital letters to the password
     if '-c' in args:
         # Check if the capital letters are specified
@@ -331,23 +326,19 @@ def __main__():
             if not args[args.index('-c') + 1] in short_options:
                 # Try to convert the capital letters to an integer
                 try:
-                    capital = int(args[args.index('-c') + 1])
+                    capital = round(int(args[args.index('-c') + 1]))
                 except Exception:
                     # Error
                     console.error('The capital letters must be an number')
                     sys.exit()
             else:
-                # Warning
-                console.warning('The capital letters are not specified, using the default capital letters of ' + str(round(length/4)))
-                # Set the capital letters to the length/4
-                capital = length/4
+                # Force an Exception
+                raise Exception
         except Exception:
             # Warning
-            console.warning('The capital letters are not specified, using the default capital letters of ' + str(round(length/4)))
-            # Set the capital letters to the length/4
-            capital = length/4
-    else:
-        capital = 0
+            console.warning('The capital letters are not specified')
+    # Start lower with 0
+    lower = 0
     # Check if the user wants to add lower letters to the password
     if '-l' in args:
         # Check if the lower letters are specified
@@ -355,46 +346,70 @@ def __main__():
             if not args[args.index('-l') + 1] in short_options:
                 # Try to convert the lower letters to an integer
                 try:
-                    lower = int(args[args.index('-l') + 1])
+                    lower = round(int(args[args.index('-l') + 1]))
                 except Exception:
                     # Error
                     console.error('The lower letters must be an number')
                     sys.exit()
             else:
-                # Warning
-                console.warning('The lower letters are not specified, using the default lower letters of ' + str(round(length/4)))
-                # Set the lower letters to the length/4
-                lower = length/4
+                # Force an Exception
+                raise Exception
         except Exception:
             # Warning
-            console.warning('The lower letters are not specified, using the default lower letters of ' + str(round(length/4)))
-            # Set the lower letters to the length/4
-            lower = length/4
-    else:
-        lower = 0
+            console.warning('The lower letters are not specified')
     # Check if the user wants to add all stuff to the password
     if '-a' in args:
         all_stuff = True
     else:
         all_stuff = False
-    # Check if all the options are specified
+    # Check if nothing is specified
     if not all_stuff:
+        # Set all stuff to True
+        all_stuff = True
         # Check numbers, symbols, capital and lower
-        if numbers == 0 and symbols == 0 and capital == 0 and lower == 0:
+        if not numbers and not symbols and not capital and not lower:
             # Warning
             console.warning('Nothig is specified, using the default options')
-            all_stuff = True
-    # Define the numbers, symbols, capital and lower
+    # Check if all stuff is specified
     if all_stuff:
-        numbers = length/3
-        capital = length/3
-        lower = length/3
+        # Set numbers, symbols, capital and lower with the spaces variable
+        spaces = 4
+        digits = length
+        # Check numbers
+        if not numbers == 0:
+            digits = digits - numbers
+            spaces = spaces - 1
+        # Check symbols
+        if not symbols == 0:
+            digits = digits - symbols
+            spaces = spaces - 1
+        # Check capital
+        if not capital == 0:
+            digits = digits - capital
+            spaces = spaces - 1
+        # Check lower
+        if not lower == 0:
+            digits = digits - lower
+            spaces = spaces - 1
+        # Check spaces
+        if not spaces == 0:
+            # Check numbers
+            if numbers == 0:
+                numbers = digits / spaces
+            # Check symbols
+            if symbols == 0:
+                symbols = digits / spaces
+            # Check capital
+            if capital == 0:
+                capital = digits / spaces
+            # Check lower
+            if lower == 0:
+                lower = digits / spaces
     # Force integer
     numbers = round(numbers)
     symbols = round(symbols)
     capital = round (capital)
     lower = round(lower)
-
     # Define lowercase characters
     all_lowercase = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     # Define uppercase characters
@@ -403,7 +418,6 @@ def __main__():
     all_numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     # Define symbols
     all_symbols = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '=', '+', '{', '}', '[', ']', ':', ';', '<', '>', ',', '.', '?']
-
     # Check if the user wants to use a password instead of a random one
     if password != '':
         # Check if the password lenght is less than the length
